@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Handles requests for the application home page.
@@ -52,5 +53,21 @@ public class HomeController {
 		model.addAttribute("studentId",id);
 		
 		return "student/studentId";
+	}
+	@RequestMapping(method = RequestMethod.POST, value = "/student")
+	public ModelAndView goStudent(HttpServletRequest httpServletRequest) {
+		System.out.println("RequestMethod.GET");
+		
+		String id = httpServletRequest.getParameter("id");
+		System.out.println("id: "+ id);
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("student/studentId");
+		mv.addObject("studentId",id);
+		
+		
+		//model.addAttribute("studentId",id);
+		return mv;
+		
+		//return "student/studentId";
 	}
 }
