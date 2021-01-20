@@ -2,6 +2,8 @@ package com.jongseong.js.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +17,25 @@ import com.jongseong.js.command.BModifyCommand;
 import com.jongseong.js.command.BReplyCommand;
 import com.jongseong.js.command.BReplyViewCommand;
 import com.jongseong.js.command.BWriteCommand;
+import com.jongseong.js.util.Constant;
 
 @Controller
 public class BController {
 
-	BCommand command = null;
+BCommand command;
+	
+	public JdbcTemplate template;
+	
+	@Autowired
+	public void setTemplate(JdbcTemplate template) {
+		this.template = template;
+		Constant.template = this.template;
+	}
 	
 	@RequestMapping("/list")
 	public String list(Model model) {
 		System.out.println("list()");
+		
 		command = new BListCommand();
 		command.execute(model);
 		
@@ -45,11 +57,12 @@ public class BController {
 		command = new BWriteCommand();
 		command.execute(model);
 		
+		
 		return "redirect:list";
 	}
 	
-	@RequestMapping("/content_view")
-	public String content_view(HttpServletRequest request, Model model){
+	@RequestMapping("content_view")
+	public String content_view(HttpServletRequest request, Model model) {
 		System.out.println("content_view()");
 		
 		model.addAttribute("request", request);
@@ -59,8 +72,8 @@ public class BController {
 		return "content_view";
 	}
 	
-	@RequestMapping(value="/modify", method=RequestMethod.POST )
-	public String modify(HttpServletRequest request, Model model){
+	@RequestMapping(method=RequestMethod.POST, value = "/modify")
+	public String modify(HttpServletRequest request, Model model) {
 		System.out.println("modify()");
 		
 		model.addAttribute("request", request);
@@ -71,7 +84,7 @@ public class BController {
 	}
 	
 	@RequestMapping("/reply_view")
-	public String reply_view(HttpServletRequest request, Model model){
+	public String reply_view(HttpServletRequest request, Model model) {
 		System.out.println("reply_view()");
 		
 		model.addAttribute("request", request);
@@ -85,7 +98,7 @@ public class BController {
 	public String reply(HttpServletRequest request, Model model) {
 		System.out.println("reply()");
 		
-		model.addAttribute("request", request);		
+		model.addAttribute("request", request);
 		command = new BReplyCommand();
 		command.execute(model);
 		
